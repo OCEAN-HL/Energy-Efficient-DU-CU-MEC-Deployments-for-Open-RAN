@@ -29,6 +29,8 @@ In addition, the longer idle time is, the more energy DCMH can save compared to 
 The project helps users get better services and operators save future RAN update costs.
 "
 
-Contact info: Haiyuan Li (ocean.h.li.2018@bristol.ac.uk)\
+Contact info: \
+Shuangyi Yan (shuangyi.yan@bristol.ac.uk)\
+Haiyuan Li (ocean.h.li.2018@bristol.ac.uk)\
 University of Bristol
 
