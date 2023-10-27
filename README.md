@@ -3,9 +3,12 @@
 <p align="center">
   <img src="https://user-images.githubusercontent.com/82140899/202213539-acadf116-4cfd-422b-99df-1ea56b622a94.png" width="30%">
 </p>
+
 *This work is supported by the European Commission's Horizon 2020 research and innovation program under grant agreement No 871428, 5G-CLARITY project (D-ACAD-052).* 
 
+
 **A Brief description of this repository:**
+
 
 This repository provided an Open Radio Access Network baseband function (DU-CU-UPF) deployment heuristic to optimize network resource utilization.
 
