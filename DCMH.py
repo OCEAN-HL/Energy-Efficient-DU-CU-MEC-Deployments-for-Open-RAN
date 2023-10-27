@@ -91,8 +91,8 @@ class Network:
 
     def addVertex(self, key, type, Computing_resource, CU_resource, DU_resource):
         self.numVertices = self.numVertices + 1
-        newVertex = Vertex(key, type, Computing_resource, CU_resource, DU_resource) # 让newVertex是Vertex类的数据类型
-        self.vertList[key] = newVertex # VertList是个字典；newVertex有三个指向(数字id和字典connectedTo和列表resource)的数据类型
+        newVertex = Vertex(key, type, Computing_resource, CU_resource, DU_resource) # Let newVertex be the data type of class Vertex
+        self.vertList[key] = newVertex # VertList is a dictionary; newVertex has three data types pointing to (numeric id, dictionary connectedTo and list resource)
         return newVertex
 
     def delateVertex(self, key):
@@ -107,16 +107,16 @@ class Network:
         self.vertList[key].resource[1] = self.vertList[key].resource[1] + ch_DU
         self.vertList[key].resource[2] = self.vertList[key].resource[2] + ch_CU
 
-    def getVertex(self, n):  # 找到名字为n的节点, 节点是有三个指向(数字id和字典connectedTo和列表resource)的数据类型
+    def getVertex(self, n):  # Find the node named n. The node is a data type with three points (numeric id, dictionary connectedTo and list resource).
         if n in self.vertList:
             return self.vertList[n]
         else:
             return None
 
-    def __contains__(self, n): # 可判断我们输入的数据是否在Class里.参数n就是我们传入的数据, 就可以用print(xx in XX)、dict.has_key(key)
+    def __contains__(self, n): # It can be judged whether the data we input is in Class. The parameter n is the data we passed in, so we can use print(xx in XX), dict.has_key(key)
         return n in self.vertList
 
-    def addEdge(self, f, t, dt):  # 用于连接from_Vertex 到 to_Vertex 的无向边
+    def addEdge(self, f, t, dt):  # Undirected edge connecting from_Vertex to to_Vertex
         if f in self.vertList and t in self.vertList:
             self.vertList[f].addNeighbour(t, dt)
             self.vertList[t].addNeighbour(f, dt)
@@ -188,7 +188,7 @@ def find_the_shrest_path(req_position, NodeB):
 def get_key(dict, value):
     return [k for k, v in dict.items() if v == value]
 
-def chose_the_MEC(Unactivated, Activated_node): # 这里的activated不是真正的，而是可能将要被激活的选项
+def chose_the_MEC(Unactivated, Activated_node): # 'activated': Options that may be activated
     activated = [k for k in Activated_node.keys()]
     # for i in activated:  # remove the activated node cause they select themself
     #     if i in Unactivated:
@@ -241,14 +241,14 @@ def chose_the_MEC(Unactivated, Activated_node): # 这里的activated不是真正
     values = [k for k in result.values()]
     keys = [k for k in result.keys()]
 
-    zip_two = zip(keys, values) # zip两个，对一个操作，另一个跟着变
+    zip_two = zip(keys, values)
     sorted_keys_values = sorted(zip_two, key=lambda x:x[1])
     output = zip(*sorted_keys_values)
     sorted_keys, sorted_values = [list(x) for x in output]
 
     for i in [k for k in goable_nodes.keys()]:
         arr1 = sorted_keys
-        goable_nodes[i].sort(key=arr1.index) # 按照已有顺序排序
+        goable_nodes[i].sort(key=arr1.index)
 
     sorted_goable_nodes = copy.deepcopy(goable_nodes)
     # for i in [k for k in goable_nodes.keys()]:
@@ -257,9 +257,9 @@ def chose_the_MEC(Unactivated, Activated_node): # 这里的activated不是真正
         for ii in sorted_goable_nodes[i]:
             if ii in [k for k in sorted_goable_nodes.keys()] and ii != i:
                 sorted_goable_nodes[i].remove(ii)
-                sorted_goable_nodes[i].append(ii) # 排序与之前小有不同，先把其他PP放在后面，节约该PP留在本地，不需要传输能耗！
-
-    # 这里解决使用PP3还是PP2的问题
+                sorted_goable_nodes[i].append(ii) # The sorting is slightly different from the previous one. Put other PPs at the back first to save the PP and keep it locally without transmission energy consumption
+                
+    # here we decide PP3 or PP2
     sorted_goable_list = [k for k in sorted_goable_nodes.keys()]
     sorted_goable_nodes_1 = {}
     for i in [k for k in sorted_goable_nodes.keys()]:
@@ -267,7 +267,7 @@ def chose_the_MEC(Unactivated, Activated_node): # 这里的activated不是真正
             task_size = 0
             for ii in sorted_goable_nodes[i]:
                 task_size = task_size + Net.traffic[ii][2]
-            if task_size > PP2_MEC_size: # 只要大于 PP2的承载能力，用PP3就是赚的; 小于就是亏；所以按照排队的方式，最后一个就算小于，但如果还是要激活，那就是没办法了，必须满足hardlimit
+            if task_size > PP2_MEC_size: # As long as it is greater than the carrying capacity of PP2, it is better to use PP3; so according to the queuing method, even the last one is less than the carrying capacity
                 sorted_goable_list.remove(i)
                 sorted_goable_list.insert(0, i)
             else:
@@ -286,7 +286,7 @@ def chose_the_MEC(Unactivated, Activated_node): # 这里的activated不是真正
         for ii in [k for k in sorted_goable_nodes_1.keys()]:
             for i in [k for k in sorted_goable_nodes_1.values()]:
                 for iii in i:
-                    if Net.traffic[iii][2] <= Activated_node[ii][0]: #并不是所有以此为MEC的请求，都会把DU，CU放在这里，这需要后面去判断
+                    if Net.traffic[iii][2] <= Activated_node[ii][0]: 
                     # if Net.traffic[iii][2] <= Activated_node[ii][0] and (Net.traffic[iii][3] * left_ratio) <= Activated_node[ii][1] \
                     #         and Net.traffic[iii][3] <= Activated_node[ii][2]: # need to satisfy the size of both MEC/DU/CU
                         Activated_node[ii][0] = Activated_node[ii][0] - Net.traffic[iii][2]
@@ -319,9 +319,6 @@ def chose_the_MEC(Unactivated, Activated_node): # 这里的activated不是真正
     for i in Traffic_to_Core: # move the traffic that is going to the core
         if i in no_MEC_yet_in_the_end:
             no_MEC_yet_in_the_end.remove(i)
-    # print(no_MEC_yet) # 这两个是一个东西，都是还没有选择的
-    # print(rest_from_activated) # 只不过这一个是可以连接到activated的
-    # print(Recording)
 
     for i in [k for k in Recording.values()]:
         for ii in i:
@@ -533,7 +530,7 @@ for i in Net.getVertics():
 # STAGE 1 #
 Traffic_to_Core = [] # Which traffic that will go to the core
 for i in [k for k in Net.traffic.keys()]:
-    if Net.traffic[i][1] >= 100: # 随便设了一个到core到距离
+    if Net.traffic[i][1] >= 100: 
         Traffic_to_Core.append(i)
 # print(Traffic_to_Core)
 
@@ -640,12 +637,12 @@ for i in [k for k in paths_from_Unactivated_to_activated.keys()]:
 # print(distance)
 # print(paths_from_Unactivated_to_activated)
 
-# record the activated node, 这里一堆乱七八糟排队，是因为需要决定谁去用这个已经激活的MEC
+# record the activated node
 goable_nodes = {} # which nodes can go the activated nodes
 Ungoable_nodes = []
 for i in Unactivated:
     for ii in activated:
-        if Net.traffic[i][1] >= min(distance[i + '-' + ii]): # 用于比较最短距离与可接受距离
+        if Net.traffic[i][1] >= min(distance[i + '-' + ii]):
             if ii in goable_nodes:
                 goable_nodes[ii].append(i)
             else:
@@ -665,7 +662,7 @@ for i in [k for k in goable_nodes.values()]:
 result = Counter(overall_nodes_to_all_activated)
 values = [k for k in result.values()]
 keys = [k for k in result.keys()]
-zip_two = zip(keys, values) # zip两个，对一个操作，另一个跟着变
+zip_two = zip(keys, values) 
 sorted_keys_values = sorted(zip_two, key=lambda x:x[1])
 output = zip(*sorted_keys_values)
 sorted_keys, sorted_values = [list(x) for x in output]
@@ -692,7 +689,7 @@ while copy1 != sorted_goable_nodes:
     for ii in [k for k in sorted_goable_nodes.keys()]:
         for i in [k for k in sorted_goable_nodes.values()]:
             for iii in i:
-                if Net.traffic[iii][2] <= Activated_node[ii][0]: #并不是所有以此为MEC的请求，都会把DU，CU放在这里，这需要后面去判断
+                if Net.traffic[iii][2] <= Activated_node[ii][0]: 
                     Activated_node[ii][0] = Activated_node[ii][0] - Net.traffic[iii][2]
                     Net.traffic[iii][2] = 0
                     if ii in Recording:
@@ -724,10 +721,6 @@ while copy1 != sorted_goable_nodes:
 for i in Traffic_to_Core: # move the traffic that is going to the core
     if i in no_MEC_yet:
         no_MEC_yet.remove(i)
-# print(no_MEC_yet) # 这两个是一个东西，都是还没有选择的
-# print(rest_from_activated) # 只不过这一个是可以连接到activated的
-
-
 
 
 for i in [k for k in Recording.values()]:
@@ -754,9 +747,8 @@ for i in [k for k in Recording.values()]: # put e.g.[node7, node7, 0] in to path
 # print(3)
 if 'Node20' in no_MEC_yet:
     no_MEC_yet.remove('Node20')
-# 这里做除了activated之外的选择
-# 之前是两个都必开，这里是不确定开几个
-overlap_time_dictionary = {} # overlap就是看重叠次数的，这里相当于做第一次排队，后面还会排队的
+
+overlap_time_dictionary = {}
 for i in Unactivated_PP2_PP3:
     for ii in no_MEC_yet:
         shorest_path_from, shorest_distance_from = find_the_shrest_path(ii, i)
@@ -767,7 +759,7 @@ for i in Unactivated_PP2_PP3:
                 overlap_time_dictionary[i] = 1
 keys_1 = [k for k in overlap_time_dictionary.keys()]
 values_1 = [k for k in overlap_time_dictionary.values()]
-zip_two_1 = zip(keys_1, values_1) # zip两个，对一个操作，另一个跟着变
+zip_two_1 = zip(keys_1, values_1) 
 sorted_keys_values_1 = sorted(zip_two_1, key=lambda x:x[1])
 output_1 = zip(*sorted_keys_values_1)
 sorted_keys_1, sorted_values_1 = [list(x) for x in output_1]
@@ -779,9 +771,9 @@ for i in sorted_keys_1:
     Might_activated[i] = Net.vertList[i].resource
 
 reference_activated = copy.deepcopy(Might_activated)
-no_MEC_in_the_end, Recording_of_the_paths_2 = chose_the_MEC(no_MEC_yet, Might_activated) # 在函数里又进行了排队
+no_MEC_in_the_end, Recording_of_the_paths_2 = chose_the_MEC(no_MEC_yet, Might_activated) 
 print('no MEC in the end')
-print(no_MEC_in_the_end) # 这个就是空的，所有人都有，如果不是空的，说明资源用尽也不够，就需要拒绝
+print(no_MEC_in_the_end) 
 # print(Recording_of_the_paths_2)
 
 for i in [k for k in Net.traffic.keys()]:
@@ -789,40 +781,32 @@ for i in [k for k in Net.traffic.keys()]:
         if ii == i:
             del Net.traffic[i]
 
-# 最后选中的哪几个PP，加入到最开始的PP记录中
 for i in [k for k in Might_activated.keys()]:
-    if Might_activated[i] != reference_activated[i]: # 只要变化，就说明被用到了。
+    if Might_activated[i] != reference_activated[i]:
         Activated_node[i] = Might_activated[i]
 
-# print('123')
-# print(Activated_node)
-# print(Net.vertList['Node3'].resource)
-
-# 保护链路的设置, 这里的path已经是满足时延要求的了。不满足的那些链路之前就删掉了
 Recording_of_the_paths_end = copy.deepcopy(Recording_of_the_paths)
 for i in [k for k in Recording_of_the_paths_2.keys()]:
     Recording_of_the_paths_end[i] = Recording_of_the_paths_2[i]
 
 # print(Recording_of_the_paths_end)
 
-###### 这里是准备 only one way 到MEC的
 links = [k for k in Recording_of_the_paths_end.values()]
 links_copy = copy.deepcopy(links)
 only_one_way_to_go_MEC = {}
 for i in links:
     if len(i) == 1:
-        links_copy.remove(i) # 这里是移除那些MEC在自己身上的节点；与服务chian不一样的是，chain上f1不能放在自己，而这里DU/CU可以放在自己
+        links_copy.remove(i)
         only_one_way_to_go_MEC[i[0][0]] = i
 print('only_one_way_to_go_MEC')
 print('mention here')
-print(only_one_way_to_go_MEC) # 别忘记了！这里面的因为被删除了，所以在CU那里得重新考虑他们
+print(only_one_way_to_go_MEC) 
 
-# 这里是考虑那些放置在自己身上的，的DU和CU 的资源
 for i in only_one_way_to_go_MEC.keys():
     if i == only_one_way_to_go_MEC[i][0][-2]:
         Net.vertList[i].resource[2] -= Net.traffic[i][-1]
         Net.vertList[i].resource[1] -= Net.traffic[i][-1] * Size_decrease_ratio
-    else: # 其他的 CU是一定放在这里的，DU不一定
+    else: 
         Net.vertList[i].resource[1] -= Net.traffic[i][-1] * Size_decrease_ratio
 
 
@@ -862,9 +846,10 @@ for path in links_copy:
                 jj.insert(-1, target)
     all_node_all_path_record[i] = usable_paths_in_all_paths
 
-###### 这里是准备 no_backup_to_use, except only one way 的
+###### no_backup_to_use, except only one way ######
 print(all_node_all_path_record)
 print(Recording_of_the_paths_end)
+
 for i in [k for k in all_node_all_path_record.keys()]:
     if all_node_all_path_record[i] == []:
         for ii in [k for k in Recording_of_the_paths_end.keys()]:
@@ -872,8 +857,8 @@ for i in [k for k in all_node_all_path_record.keys()]:
                 no_backup_to_use[i] = Recording_of_the_paths_end[ii]
                 del all_node_all_path_record[i]
                 break
-print(5)
-################################################# 这里可以看 终点在哪里 ########################################
+
+################################################# end point ########################################
 print(' no backup to use ')
 print(no_backup_to_use)
 print(all_node_all_path_record)
@@ -885,16 +870,10 @@ for i in only_one_way_to_go_MEC.keys():
     if only_one_way_to_go_MEC[i][0][-2] not in MEC:
         MEC.append(only_one_way_to_go_MEC[i][0][-2])
 
-# 这里是把那些只有一条可用链路的加回来
-
-
-# 这三句是把目标是Core的加进all_node_all_path_record来
 for i in [k for k in path_pair_to_core.keys()]:
     if i not in all_node_all_path_record:
         all_node_all_path_record[i] = path_pair_to_core[i]
 
-
-###### 这里是准备 rest_unused_path
 record_list = []
 for i in [k for k in all_node_all_path_record.keys()]:
     for ii in all_node_all_path_record[i]:
@@ -915,15 +894,13 @@ for i in record_list_1:
 for i in [k for k in only_one_way_to_go_MEC.keys()]:
     if i in [k for k in rest_unused_path.keys()]:
         del rest_unused_path[i]
-# print(rest_unused_path)
 
-# MEC 的放置已经完成了，现在开始放置DU
 all_DU = copy.deepcopy(all_node_all_path_record)
 for i in [k for k in all_DU.keys()]:
     for ii in range(len(all_DU[i])):
         for iii in range(len(all_DU[i][ii])):
             all_DU[i][ii][iii] = []
-# print(all_DU)
+
 for i in [k for k in all_node_all_path_record.keys()]:
     for ii in range(len(all_node_all_path_record[i])):
         for iii in range(len(all_node_all_path_record[i][ii])):
@@ -937,7 +914,7 @@ for i in [k for k in all_node_all_path_record.keys()]:
                     all_DU[i][ii][iii].append(all_node_all_path_record[i][ii][iii][iiii + 1])
                 iiii += 1
 
-# print(all_DU) # 这里面包括的，是满足时延的前传的点，除此之外的，原本在all_node_all_path_record里的，是不能够用于当作DU使用的
+
 Activated_PP1 = {} # 'Node2':[0, 0, PP1_DU_size]
 DU = {}
 for i in [k for k in Activated_node.keys()]:
@@ -945,14 +922,14 @@ for i in [k for k in Activated_node.keys()]:
     DU[i] = Net.vertList[i].resource
 
 predeleted = {}
-for i in [k for k in Activated_PP1.keys()]: # 上一个不需要del，是因为他本身就不在列表里
+for i in [k for k in Activated_PP1.keys()]: 
     # Net.vertList[i].resource[2] -= Net.traffic[i][-1]
     DU[i] = Net.vertList[i].resource
-    if i in all_DU: # 这里因为 有一些只有一条链路到MEC的被删掉了，所以需要注意一下
+    if i in all_DU: 
         predeleted[i] = all_DU[i]
         del all_DU[i]
-print(6)
-for i in [k for k in all_DU.keys()]:# 所有pair里，两个link都只有一个跳，那这个点一定需要激活。也就是本地
+
+for i in [k for k in all_DU.keys()]:
     ii = 0
     xx = 0
     while ii < len(all_DU[i]):
@@ -968,7 +945,7 @@ for i in [k for k in all_DU.keys()]:# 所有pair里，两个link都只有一个�
 # print(all_DU)
 # print(all_node_all_path_record)
 
-# 在激活新的，还是绕远路两个里面，我们选择折中
+
 for i in [k for k in all_DU.keys()]:
     for ii in range(len(all_DU[i])):
         for iii in range(len(all_DU[i][ii])):
@@ -976,7 +953,7 @@ for i in [k for k in all_DU.keys()]:
 # print('all_DU')
 # print(all_DU)
 
-which_DU_selected = {} # 指的是 那些 新激活的PP1
+which_DU_selected = {} 
 which_include_existed_PP1 = {}
 for i in [k for k in all_DU.keys()]:
     for ii in all_DU[i]:
@@ -997,7 +974,7 @@ for i in [k for k in all_DU.keys()]:
 # print('')
 # print('which_include_existed_PP1:')
 # print(which_include_existed_PP1)
-copy_for_rest = copy.deepcopy(which_include_existed_PP1) # 这个可以用于下面这一轮，虽然有可用的，但是却因为可用的资源不够而需要激活新的
+copy_for_rest = copy.deepcopy(which_include_existed_PP1)
 
 left_not_included_existed_PP1 = {}
 for i in [k for k in all_node_all_path_record.keys()]:
@@ -1013,10 +990,8 @@ for i in [k for k in which_include_existed_PP1.keys()]:
     for ii in which_include_existed_PP1[i]:
         ii.append(ii[0][-1] + ii[1][-1])
         record_the_hops[i].append(ii[0][-1] + ii[1][-1])
-# print('record_the hops')
-# print(record_the_hops)
 
-# 按照距离总和排队，带宽和已有激活PP2的资源 就在排好队的基础上first fit
+
 for i in [k for k in record_the_hops.keys()]:
     second = which_include_existed_PP1[i]
     first = record_the_hops[i]
@@ -1064,14 +1039,14 @@ for i in [k for k in which_include_existed_PP1.keys()]:
                     wp = 1
                 elif which_include_existed_PP1[i][ii][0][-1] < which_include_existed_PP1[i][ii][1][-1]:
                     wp = 0
-                if Net.vertList[iii].resource[2] > Net.traffic[i][3]: # DU 资源是否充足
+                if Net.vertList[iii].resource[2] > Net.traffic[i][3]: 
                     n = 0
-                    while n < len(which_include_existed_PP1[i][ii][wp]) - 2: # 检查 带宽是否充足
+                    while n < len(which_include_existed_PP1[i][ii][wp]) - 2:
                         if str(which_include_existed_PP1[i][ii][wp][n]) + '-' + \
                                 str(which_include_existed_PP1[i][ii][wp][n + 1]) in daikuan:
                             daikuan[str(which_include_existed_PP1[i][ii][wp][n]) + '-' +
                                     str(which_include_existed_PP1[i][ii][wp][n + 1])] -= Net.traffic[i][3]
-                        else: # 说明反顺序在
+                        else: 
                             daikuan[str(which_include_existed_PP1[i][ii][wp][n + 1]) + '-' +
                                     str(which_include_existed_PP1[i][ii][wp][n])] -= Net.traffic[i][3]
                         n += 1
@@ -1127,14 +1102,6 @@ for i in [k for k in which_include_existed_PP1.keys()]:
                 break
         if flage:
             break
-# print('allpath')
-# print(allpath)
-# print('working')
-# print(working)
-# # print('Net.bandwidth')
-# # print(Net.bandwidth)
-print('which_PP1_used')
-print(which_PP1_used)
 
 
 for i in [k for k in predeleted.keys()]:
@@ -1142,10 +1109,10 @@ for i in [k for k in predeleted.keys()]:
         for iii in range(len(predeleted[i][ii])):
             predeleted[i][ii][iii].append(len(all_node_all_path_record[i][ii][iii]) - 1)
 
-for i in [k for k in which_include_existed_PP1.keys()]:  # rest_need里边本来就有一点，这里加上 原本是可以用已激活的，但是其资源不够
+for i in [k for k in which_include_existed_PP1.keys()]:  
     if i not in [k for k in which_PP1_used]:
         rest_need_new_PP1[i] = copy.deepcopy(copy_for_rest[i])
-for i in [k for k in predeleted.keys()]:  # 原本是可以用已激活的，但是其资源不够
+for i in [k for k in predeleted.keys()]:  
     if i not in [k for k in which_PP1_used]:
         rest_need_new_PP1[i] = copy.deepcopy(predeleted[i])
 # print('rest_need_new_PP1:')
@@ -1160,9 +1127,7 @@ for i in [k for k in rest_need_new_PP1.keys()]:
     for ii in rest_need_new_PP1[i]:
         ii.append(ii[0][-1] + ii[1][-1])
         record_the_hops_1[i].append(ii[0][-1] + ii[1][-1])
-# print(record_the_hops_1)
-#
-# 按照距离总和排队，带宽和已有激活PP2的资源 就在排好队的基础上first fit
+
 for i in [k for k in record_the_hops_1.keys()]:
     second = rest_need_new_PP1[i]
     first = record_the_hops_1[i]
@@ -1182,13 +1147,11 @@ for i in [k for k in record_the_hops_1.keys()]:
     output_fs = zip(*sorted_fs)
     sorted_second, sorted_first = [list(x) for x in output_fs]
     all_node_all_path_record[i] = sorted_second
-# print('all_node_all_path_record')
-# print(all_node_all_path_record)
 
 
-# 最后可能原有已经激活的还不够，这时候这个剩下的点，要和原来被剔出去的那个点结合，一起找最大交叠点， 万一最大交叠点是已有点，就直接删除重选
-# 找最大点，其实就是在画圈找最大交叠点，还要做一些带宽的管理
-# 得找个地方把那Node1给加上，因为它不是一hop的连接
+# In the end, the original activated points may not be enough. At this time, the remaining points should be combined with the originally removed points to find the maximum overlap point. If the maximum overlap point is an existing point, delete it directly. Reselect
+# Finding the maximum point actually means drawing circles to find the maximum overlap point, and also needs to do some bandwidth management.
+# You have to find a place to add Node1, because it is not a hop connection
 all_the_PP1s_without_times = []
 for u in [k for k in rest_need_new_PP1]:
     for i in rest_need_new_PP1[u]:
@@ -1205,16 +1168,14 @@ count_for = Counter(all_the_PP1s_without_times)
 values_of_count_for = [k for k in count_for.values()]
 keys_of_count_for = [k for k in count_for.keys()]
 
-zip_two_2 = zip(keys_of_count_for, values_of_count_for) # zip两个，对一个操作，另一个跟着变
+zip_two_2 = zip(keys_of_count_for, values_of_count_for) 
 sorted_keys_values_2 = sorted(zip_two_2, key=lambda x:x[1])
 output_2 = zip(*sorted_keys_values_2)
 sorted_keys_of_count_for, sorted_values_of_count_for = [list(x) for x in output_2]
 sorted_keys_of_count_for.reverse()
 sorted_values_of_count_for.reverse()
-# print(sorted_keys_of_count_for)
-# # 这里就画完圈了
 
-# 这里是排队，目标是对还没有找到DU的，从一个排好队的列表里选择，先选初始激活的PP1，再从已经被激活的PP2/3里选
+
 for i in [k for k in DU.keys()]:
     if i in sorted_keys_of_count_for:
         sorted_keys_of_count_for.remove(i)
@@ -1227,7 +1188,7 @@ for i in [k for k in Activated_PP1.keys()]:
         sorted_keys_of_count_for.insert(0, i)
 # print('sorted_keys_of_count_for')
 
-for i in PP2_or_PP3: # 除非是已经激活的，否则优先激活PP1，PP2往后稍稍
+for i in PP2_or_PP3: 
     if i not in [k for k in DU.keys()] and i in sorted_keys_of_count_for:
         sorted_keys_of_count_for.remove(i)
         sorted_keys_of_count_for.append(i)
@@ -1237,9 +1198,7 @@ flage = False
 for i in [k for k in rest_need_new_PP1.keys()]:
     for ii in range(len(rest_need_new_PP1[i])):
         flage = False
-        # print(rest_need_new_PP1[i][ii])
         for iii in sorted_keys_of_count_for:
-            # 这里是在这一个pair中，选择hop数目少的作为working path
             if iii in rest_need_new_PP1[i][ii][0] or iii in rest_need_new_PP1[i][ii][1]:
                 wp = 0 # working_path
                 if iii in rest_need_new_PP1[i][ii][0] and iii not in rest_need_new_PP1[i][ii][1]:
@@ -1250,14 +1209,14 @@ for i in [k for k in rest_need_new_PP1.keys()]:
                     wp = 1
                 elif rest_need_new_PP1[i][ii][0][-1] < rest_need_new_PP1[i][ii][1][-1]:
                     wp = 0
-                if Net.vertList[iii].resource[2] > Net.traffic[i][3]: # DU 资源是否充足
+                if Net.vertList[iii].resource[2] > Net.traffic[i][3]: 
                     n = 0
-                    while n < len(rest_need_new_PP1[i][ii][wp]) - 2: # 检查 带宽是否充足
+                    while n < len(rest_need_new_PP1[i][ii][wp]) - 2:
                         if str(rest_need_new_PP1[i][ii][wp][n]) + '-' + \
                                 str(rest_need_new_PP1[i][ii][wp][n + 1]) in daikuan:
                             daikuan[str(rest_need_new_PP1[i][ii][wp][n]) + '-' +
                                     str(rest_need_new_PP1[i][ii][wp][n + 1])] -= Net.traffic[i][3]
-                        else: # 说明反顺序在
+                        else: 
                             daikuan[str(rest_need_new_PP1[i][ii][wp][n + 1]) + '-' +
                                     str(rest_need_new_PP1[i][ii][wp][n])] -= Net.traffic[i][3]
                         n += 1
@@ -1313,26 +1272,14 @@ for i in [k for k in rest_need_new_PP1.keys()]:
                 break
         if flage:
             break
-print('allpath:')
-print(allpath)
-print('working:')
-print(working)
-# print('Net.bandwidth:')
-# print(Net.bandwidth)
-# ######################################################### 这里是用了哪个DU #######################################
-# print('which_PP1_used:')
-# print(which_PP1_used)
 
-# NEXT STAGE
-# 需要在PP2_or_PP3里选择 CU
+
 start = time.time()
 
-# 从DU开始到CU的链路
 looking_for_CU = {}
 for i in [k for k in which_PP1_used.keys()]:
     looking_for_CU[i] = copy.deepcopy(working[i][working[i].index(which_PP1_used[i]):])
-# print(looking_for_CU)
-# 链路上只能作为PP2/3的点
+
 copy_lok = copy.deepcopy(looking_for_CU)
 for i in [k for k in copy_lok.keys()]:
     for ii in copy_lok[i]:
@@ -1362,7 +1309,7 @@ for i in [k for k in copy_lok.keys()]:
                 break
 print('CU')
 print(which_CU)
-######################################################### 这里是用了哪个CU #######################################
+################################## CU #######################################
 
 
 
@@ -1414,6 +1361,6 @@ for i in [k for k in only_one_way_to_go_MEC.keys()]:
 print('DU')
 print(which_PP1_used)
 
-######################################################### 这里是用了哪个DU #######################################
 
-# 最后只需要按照选择好的DU，CU，MEC去计算能耗就ok了
+
+# In the end, you only need to calculate the energy consumption according to the selected DU, CU, and MEC.
